@@ -40,6 +40,32 @@ void printc (int i, int j, bool cursor) {
   cout << " ";
 }
 
+int countBombs (int x, int y) {
+  int c = 0;
+  if(y < height-1 && x < height-1 && field[y+1][x+1].value == 9) c++;
+  if(y < height-1 && field[y+1][x].value == 9) c++;
+  if(y < height-1 && x > 0 && field[y+1][x-1].value == 9) c++;
+  if(x < height-1 && field[y][x+1].value == 9) c++;
+  if(x > 0 && field[y][x-1].value == 9) c++;
+  if(y > 0 && x < height-1 &&field[y-1][x+1].value == 9) c++;
+  if(y > 0 && field[y-1][x].value == 9) c++;
+  if(y > 0 && x > 0 && field[y-1][x-1].value == 9) c++;
+  return c;
+}
+
+int countFlags (int x, int y) {
+  int c = 0;
+  if(y < height-1 && x < height-1 && field[y+1][x+1].flagged) c++;
+  if(y < height-1 && field[y+1][x].flagged) c++;
+  if(y < height-1 && x > 0 && field[y+1][x-1].flagged) c++;
+  if(x < height-1 && field[y][x+1].flagged) c++;
+  if(x > 0 && field[y][x-1].flagged) c++;
+  if(y > 0 && x < height-1 &&field[y-1][x+1].flagged) c++;
+  if(y > 0 && field[y-1][x].flagged) c++;
+  if(y > 0 && x > 0 && field[y-1][x-1].flagged) c++;
+  return c;
+}
+
 //Uncovering algorithm
 void uncover (int x, int y) {
   field[y][x].visible = true;
@@ -154,16 +180,7 @@ int main () {
   for(int i=0; i<height; i++){
     for (int j = 0; j < width; j++) {
       if(field[i][j].value == 9) continue;
-      int c = 0;
-      if(field[i+1][j+1].value == 9) c++;
-      if(field[i+1][j].value == 9) c++;
-      if(field[i+1][j-1].value == 9) c++;
-      if(field[i][j+1].value == 9) c++;
-      if(field[i][j-1].value == 9) c++;
-      if(field[i-1][j+1].value == 9) c++;
-      if(field[i-1][j].value == 9) c++;
-      if(field[i-1][j-1].value == 9) c++;
-      field[i][j].value = c;
+      field[i][j].value = countBombs(j, i);
     }
   }
 
@@ -221,20 +238,19 @@ int main () {
       x++;
     }
 
-    else if (key == 1) {
+    else if (key == 1 || key == 32) {
       if (field[y][x].flagged) continue;
-      // //For already uncovered points, all adjacant points are uncovered
-      // //To be added: safety feature if N amount of flags havent been placed adjacently yet
-      // if (field[y][x].visible){
-      //   if(!field[y+1][x+1].visible && !field[y+1][x+1].flagged) uncover(x+1, y+1);
-      //   if(!field[y][x+1].visible && !field[y][x+1].flagged) uncover(x+1, y);
-      //   if(!field[y-1][x+1].visible && !field[y-1][x+1].flagged) uncover(x+1, y-1);
-      //   if(!field[y+1][x].visible && !field[y+1][x].flagged) uncover(x, y+1);
-      //   if(!field[y-1][x].visible && !field[y-1][x].flagged) uncover(x, y-1);
-      //   if(!field[y+1][x-1].visible && !field[y+1][x-1].flagged) uncover(x-1, y+1);
-      //   if(!field[y][x-1].visible && !field[y][x-1].flagged) uncover(x-1, y);
-      //   if(!field[y-1][x-1].visible && !field[y-1][x-1].flagged) uncover(x-1, y-1);
-      // }
+      if (field[y][x].visible){
+        if(countFlags(x, y) != field[y][x].value) continue;
+        if(!field[y+1][x+1].visible && !field[y+1][x+1].flagged) uncover(x+1, y+1);
+        if(!field[y][x+1].visible && !field[y][x+1].flagged) uncover(x+1, y);
+        if(!field[y-1][x+1].visible && !field[y-1][x+1].flagged) uncover(x+1, y-1);
+        if(!field[y+1][x].visible && !field[y+1][x].flagged) uncover(x, y+1);
+        if(!field[y-1][x].visible && !field[y-1][x].flagged) uncover(x, y-1);
+        if(!field[y+1][x-1].visible && !field[y+1][x-1].flagged) uncover(x-1, y+1);
+        if(!field[y][x-1].visible && !field[y][x-1].flagged) uncover(x-1, y);
+        if(!field[y-1][x-1].visible && !field[y-1][x-1].flagged) uncover(x-1, y-1);
+      }
       else uncover(x, y);
     }
 
