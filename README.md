@@ -6,11 +6,10 @@ Minesweeper++ is a C++ implementation of Minesweeper. Currently, it has a CLI in
 
 ## Todo
 
-* Improve the menu (options selected with arrow keys)
+* Save scores (highscore, total plays...)
 * Make the board customizable (custom width, height, bomb amount)
 * Ability to enter custom seed (not random)
 * Implement unicode character support (eg. 🏳 for flag)
-* Implement arrow keys movement instead of plotting coordinates (maybe keep both as options)
 * Redo UI to be more usable
 * Remove the `rlutil.h` dependency, rewrite the functionality it serves.
 
