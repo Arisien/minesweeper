@@ -15,7 +15,7 @@ class Field {
 int height, width;
 Field field[24][24];
 
-//Prints normal points
+//Prints a field character
 void printc (int i, int j, bool cursor) {
   if (cursor) {
     rlutil::setBackgroundColor(15);
@@ -42,12 +42,12 @@ void printc (int i, int j, bool cursor) {
 
 int countBombs (int x, int y) {
   int c = 0;
-  if(y < height-1 && x < height-1 && field[y+1][x+1].value == 9) c++;
+  if(y < height-1 && x < width-1 && field[y+1][x+1].value == 9) c++;
   if(y < height-1 && field[y+1][x].value == 9) c++;
   if(y < height-1 && x > 0 && field[y+1][x-1].value == 9) c++;
-  if(x < height-1 && field[y][x+1].value == 9) c++;
+  if(x < width-1 && field[y][x+1].value == 9) c++;
   if(x > 0 && field[y][x-1].value == 9) c++;
-  if(y > 0 && x < height-1 &&field[y-1][x+1].value == 9) c++;
+  if(y > 0 && x < width-1 &&field[y-1][x+1].value == 9) c++;
   if(y > 0 && field[y-1][x].value == 9) c++;
   if(y > 0 && x > 0 && field[y-1][x-1].value == 9) c++;
   return c;
@@ -55,12 +55,12 @@ int countBombs (int x, int y) {
 
 int countFlags (int x, int y) {
   int c = 0;
-  if(y < height-1 && x < height-1 && field[y+1][x+1].flagged) c++;
+  if(y < height-1 && x < width-1 && field[y+1][x+1].flagged) c++;
   if(y < height-1 && field[y+1][x].flagged) c++;
   if(y < height-1 && x > 0 && field[y+1][x-1].flagged) c++;
-  if(x < height-1 && field[y][x+1].flagged) c++;
+  if(x < width-1 && field[y][x+1].flagged) c++;
   if(x > 0 && field[y][x-1].flagged) c++;
-  if(y > 0 && x < height-1 &&field[y-1][x+1].flagged) c++;
+  if(y > 0 && x < width-1 &&field[y-1][x+1].flagged) c++;
   if(y > 0 && field[y-1][x].flagged) c++;
   if(y > 0 && x > 0 && field[y-1][x-1].flagged) c++;
   return c;
@@ -242,14 +242,14 @@ int main () {
       if (field[y][x].flagged) continue;
       if (field[y][x].visible){
         if(countFlags(x, y) != field[y][x].value) continue;
-        if(!field[y+1][x+1].visible && !field[y+1][x+1].flagged) uncover(x+1, y+1);
-        if(!field[y][x+1].visible && !field[y][x+1].flagged) uncover(x+1, y);
-        if(!field[y-1][x+1].visible && !field[y-1][x+1].flagged) uncover(x+1, y-1);
-        if(!field[y+1][x].visible && !field[y+1][x].flagged) uncover(x, y+1);
-        if(!field[y-1][x].visible && !field[y-1][x].flagged) uncover(x, y-1);
-        if(!field[y+1][x-1].visible && !field[y+1][x-1].flagged) uncover(x-1, y+1);
-        if(!field[y][x-1].visible && !field[y][x-1].flagged) uncover(x-1, y);
-        if(!field[y-1][x-1].visible && !field[y-1][x-1].flagged) uncover(x-1, y-1);
+        if(x < width-1 && y < height-1 && !field[y+1][x+1].visible && !field[y+1][x+1].flagged) uncover(x+1, y+1);
+        if(x < width-1 && !field[y][x+1].visible && !field[y][x+1].flagged) uncover(x+1, y);
+        if(x < width-1 && y > 0 && !field[y-1][x+1].visible && !field[y-1][x+1].flagged) uncover(x+1, y-1);
+        if(y < height-1 && !field[y+1][x].visible && !field[y+1][x].flagged) uncover(x, y+1);
+        if(y > 0 && !field[y-1][x].visible && !field[y-1][x].flagged) uncover(x, y-1);
+        if(x > 0 && y < height-1 && !field[y+1][x-1].visible && !field[y+1][x-1].flagged) uncover(x-1, y+1);
+        if(x > 0 && !field[y][x-1].visible && !field[y][x-1].flagged) uncover(x-1, y);
+        if(x > 0 && y > 0 && !field[y-1][x-1].visible && !field[y-1][x-1].flagged) uncover(x-1, y-1);
       }
       else uncover(x, y);
     }
