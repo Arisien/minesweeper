@@ -21,33 +21,24 @@
 
 namespace Minesweeper {
 
-    enum game_states { PLAYING, WON, LOST };
+    enum GameState { S_PLAYING, S_WON, S_LOST };
 
-    enum inputs { POSITION, FLAG, QUIT, NONE };
-
-    class Position {
-        public:
-            int x, y;
-
-            Position () {
-                x = 0;
-                y = 0;
-            }
-
-            Position (int a, int b) {
-                x = a;
-                y = b;
-            }
-    };
+    enum GameInput { I_POSITION, I_FLAG, I_QUIT, I_NONE };
 
     class Input {
         public:
             int type;
-            Position position;
+            int x;
+            int y;
 
-            Input (int t, Position p) : position { p } {
+            Input (int t) {
                 type = t;
-                position = p;
+            }
+
+            Input (int t, int a, int b) {
+                type = t;
+                x = a;
+                y = b;
             }
     };
 
@@ -62,7 +53,7 @@ namespace Minesweeper {
         public:
             std::vector<std::vector<Tile>> tiles;
             int height, width, bombs, flags, remaining;
-            int state = PLAYING;
+            int state = S_PLAYING;
 
             Field (int  h, int w, int b) {
 
@@ -143,6 +134,7 @@ namespace Minesweeper {
             }
 
             void play (int x, int y, bool flag) {
+                if (x < 0 || y < 0 || x >= width || y >= height) return;
                 
                 if (flag) {
                     if (tiles[y][x].visible) return;
@@ -164,12 +156,12 @@ namespace Minesweeper {
                 else {
                     if (tiles[y][x].flagged) return;
 
-                    if (tiles[y][x].value == 9) state = LOST;
+                    if (tiles[y][x].value == 9) state = S_LOST;
 
                     else uncover(x, y);
                 }
 
-                if (state != LOST && remaining == 0) state = WON;
+                if (state != S_LOST && remaining == 0) state = S_WON;
 
             }
 
@@ -194,11 +186,11 @@ namespace Minesweeper {
                 std::cin >> cmd;
 
                 if (cmd == "quit")  {
-                    return Input(QUIT, Position());
+                    return Input(I_QUIT);
                 }
 
                 else if (cmd == "flag") {
-                    return Input(FLAG, Position());
+                    return Input(I_FLAG);
                 }
 
                 else if (cmd == "plot") {
@@ -207,10 +199,10 @@ namespace Minesweeper {
                     std::cin >> x;
                     std::cin >> y;
 
-                    return Input(POSITION, Position(x,y));
+                    return Input(I_POSITION, x, y);
                 }
 
-                return Input(NONE, Position());
+                return Input(I_NONE);
 
             }
 
@@ -249,7 +241,7 @@ namespace Minesweeper {
 
                 std::cout << "Game Over! ";
 
-                if (field.state == LOST) {
+                if (field.state == S_LOST) {
                     std::cout << "Better luck next time." << std::endl;
                 }
 
@@ -268,20 +260,19 @@ namespace Minesweeper {
 
                     Input i = input();
 
-                    if (i.type == POSITION) {
-                        Position position = i.position;
-                        field.play(position.x, position.y, flag_mode);
+                    if (i.type == I_POSITION) {
+                        field.play(i.x, i.y, flag_mode);
                     }
 
-                    else if (i.type == FLAG) {
+                    else if (i.type == I_FLAG) {
                         flag_mode = !flag_mode;
                     }
 
-                    else if (i.type == QUIT) {
+                    else if (i.type == I_QUIT) {
                         break;
                     }
 
-                    if (field.state != PLAYING) {
+                    if (field.state != S_PLAYING) {
                         break;
                     }
 

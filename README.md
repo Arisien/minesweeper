@@ -47,11 +47,9 @@ Field is a class containing all of the core functionality for a Minesweeper boar
 
 * `Field (int h, int w, int b)` - The constructor takes 3 parameters for the dimensions of the playing field (h & w), as well as the amount of mines (b). It will then generate the field, mines, and mark all tiles with their coresponding values.
 
-* `int state` - This is state of the field, and is represented by integer enums. PLAYING means the field has not been completely cleared and flagged, WON means it has, and LOST means a mine has been triggered.
+* `int state` - This is state of the field, and is represented by integer enums. S_PLAYING means the field has not been completely cleared and flagged, S_WON means it has, and S_LOST means a mine has been triggered.
 
 * `std::vector<std::vector<Tile>> tiles` - This is a 2D vector which stores all the tiles. It is public so it can be acessed directly.
-
-* `int check_state()` - This function checks whether the game has been WON, LOST, or is still PLAYING by iterating through all Tiles. It will soon be replaced with a more efficient system.
 
 * `void uncover(int x, int y)` - The uncover algorithm is a recursive function with is used for setting all adjacent tiles to visible when a 0 value tile is uncovered by the user.
 
@@ -65,7 +63,7 @@ Game is a class containing a basic I/O system for interacting with the Field cla
 
 * `virtual void end_screen ()` - THis function is run when the game is finished. You can override when creating a custom UI.
 
-* `virtual Input input ()` - This is a function that returns user input. The Input object contains an enum stating what type of input it is (QUIT, POSITION, FLAG), as well as a Position object (containing x and y int variables) if the input type is POSITION.
+* `virtual Input input ()` - This is a function that returns user input. The Input object contains an enum stating what type of input it is (I_QUIT, I_POSITION, I_FLAG), as well as 2 integer variables x and y (used by I_POSITION inputs).
 
 * `virtual void render ()` - This function renders the UI whenever a move is played.
 
@@ -73,7 +71,6 @@ Game is a class containing a basic I/O system for interacting with the Field cla
 
 ## Todo
 
-* int remaining - store amount of tiles left to flag/uncover so the program does not need to iterate through entire vector each time to check if the game is finished.
 * `ms-cli.cpp` - Full fledged Minesweeper terminal game (colors, menu, options, centered UI, unicode, scores, seeds, save games)
 * `ms-gui.cpp` - Minesweeper implementation with GUI
 
