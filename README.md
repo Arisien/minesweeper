@@ -33,13 +33,46 @@ The game is played by writing commands to the console. The following are support
 
 ### `class Tile`
 
+Tile is a basic class containing relevant information for a Minesweeper square using public instance variables.
+
+* `int value` - The value of a tile goes from [0 - 9]. 9 means it is a bomb while the rest state how many adjacant bombs there are.
+
+* `bool visible` - This boolean states whether the tile is visible to the user.
+
+* `bool flagged` - This boolean states whether the tile has been flagged by the user.
+
 ### `class Field`
+
+Field is a class containing all of the core functionality for a Minesweeper board, but lacking a I/O system making it not directly usable by users.
+
+* `Field (int h, int w, int b)` - The constructor takes 3 parameters for the dimensions of the playing field (h & w), as well as the amount of mines (b). It will then generate the field, mines, and mark all tiles with their coresponding values.
+
+* `int state` - This is state of the field, and is represented by integer enums. PLAYING means the field has not been completely cleared and flagged, WON means it has, and LOST means a mine has been triggered.
+
+* `std::vector<std::vector<Tile>> tiles` - This is a 2D vector which stores all the tiles. It is public so it can be acessed directly.
+
+* `int check_state()` - This function checks whether the game has been WON, LOST, or is still PLAYING by iterating through all Tiles. It will soon be replaced with a more efficient system.
+
+* `void uncover(int x, int y)` - The uncover algorithm is a recursive function with is used for setting all adjacent tiles to visible when a 0 value tile is uncovered by the user.
+
+* `void play (int x, int y, bool flag)` - This function lets you play a move on the field. X and Y are coordinates of tile you want to interact with, and flag is a bool which determines whether you want to flag it or uncover it.
 
 ### `class Game`
 
+Game is a class containing a basic I/O system for interacting with the Field class. Instanciating a new Game object and running `game.start()` will create a playable Minesweeper game for the user in a command line interface. The functions of Game can be overriden to replace the UI or inputing methods for your own implementation.
+
+* `virtual void start_screen ()` - This function is run when the game is start. You can override it to initialize your UI or create a start menu.
+
+* `virtual void end_screen ()` - THis function is run when the game is finished. You can override when creating a custom UI.
+
+* `virtual Input input ()` - This is a function that returns user input. The Input object contains an enum stating what type of input it is (QUIT, POSITION, FLAG), as well as a Position object (containing x and y int variables) if the input type is POSITION.
+
+* `virtual void render ()` - This function renders the UI whenever a move is played.
+
+* `virtual void start ()` - This function is run to start the game. It contains the game loop, and can be overriden for a custom game loop which does not follow the same sequence.
+
 ## Todo
 
-* finish doc
 * int remaining - store amount of tiles left to flag/uncover so the program does not need to iterate through entire vector each time to check if the game is finished.
 * `ms-cli.cpp` - Full fledged Minesweeper terminal game (colors, menu, options, centered UI, unicode, scores, seeds, save games)
 * `ms-gui.cpp` - Minesweeper implementation with GUI
