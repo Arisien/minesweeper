@@ -52,20 +52,20 @@ namespace Minesweeper {
     class Field {
         public:
             std::vector<std::vector<Tile>> tiles;
-            int height, width, bombs, flags, remaining;
+            int height, width, mines, flags, remaining;
             int state = S_PLAYING;
 
-            Field (int  h, int w, int b) {
+            Field (int  h, int w, int m) {
 
                 // Initialize Instance Variables
 
                 height = h;
                 width = w;
-                bombs = b;
-                flags = b;
+                mines = m;
+                flags = m;
                 remaining = h*w;
 
-                if (bombs > remaining) throw std::invalid_argument("Too many bombs");
+                if (mines > remaining) throw std::invalid_argument("Too many mines");
 
                 // Generate Tile Vector
                 
@@ -79,11 +79,11 @@ namespace Minesweeper {
                     }
                 }
 
-                // Generate Bombs
+                // Generate Mines
 
                 std::srand(std::time(NULL));
 
-                for (int i = 0; i < bombs; i++) {
+                for (int i = 0; i < mines; i++) {
                     int x,y;
                     do {
                         y = rand() % height;
@@ -172,8 +172,8 @@ namespace Minesweeper {
             Field field;
             bool flag_mode;
 
-            Game (int h, int w, int b) : field {h,w,b} {
-                field = Field(h,w,b);
+            Game (int h, int w, int m) : field {h,w,m} {
+                field = Field(h,w,m);
                 flag_mode = false;
             }
 
@@ -207,7 +207,9 @@ namespace Minesweeper {
             }
 
             virtual void render () {
-                std::cout << "Minesweeper++" << std::endl << std::endl;
+
+                std::system("cls||clear");
+
 
                 for (int i = 0; i < field.height; i++) {
                     for (int j = 0; j < field.width; j++) {
@@ -269,6 +271,7 @@ namespace Minesweeper {
                     }
 
                     else if (i.type == I_QUIT) {
+                        field.state = S_LOST;
                         break;
                     }
 

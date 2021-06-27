@@ -45,7 +45,7 @@ Tile is a basic class containing relevant information for a Minesweeper square u
 
 Field is a class containing all of the core functionality for a Minesweeper board, but lacking a I/O system making it not directly usable by users.
 
-* `Field (int h, int w, int b)` - The constructor takes 3 parameters for the dimensions of the playing field (h & w), as well as the amount of mines (b). It will then generate the field, mines, and mark all tiles with their coresponding values.
+* `Field (int h, int w, int m)` - The constructor takes 3 parameters for the dimensions of the playing field (h & w), as well as the amount of mines (m). It will then generate the field, mines, and mark all tiles with their coresponding values.
 
 * `int state` - This is state of the field, and is represented by integer enums. S_PLAYING means the field has not been completely cleared and flagged, S_WON means it has, and S_LOST means a mine has been triggered.
 
