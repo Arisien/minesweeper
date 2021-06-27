@@ -61,7 +61,7 @@ namespace Minesweeper {
     class Field {
         public:
             std::vector<std::vector<Tile>> tiles;
-            int height, width, bombs, flags;
+            int height, width, bombs, flags, remaining;
             int state = PLAYING;
 
             Field (int  h, int w, int b) {
@@ -72,8 +72,9 @@ namespace Minesweeper {
                 width = w;
                 bombs = b;
                 flags = b;
+                remaining = h*w;
 
-                if (b > h*w) throw std::invalid_argument("Too many bombs");
+                if (bombs > remaining) throw std::invalid_argument("Too many bombs");
 
                 // Generate Tile Vector
                 
@@ -124,22 +125,11 @@ namespace Minesweeper {
                 
             }
 
-            int check_state () {
-                if (state != PLAYING) return state;
-
-                for (int i = 0; i < height; i++) {
-                    for (int j = 0; j < width; j++) {
-                        if (!tiles[i][j].flagged && !tiles[i][j].visible) return PLAYING;
-                    }
-                }
-
-                state = WON;
-
-                return WON;
-            }
-
             void uncover (int x, int y) {
                 tiles[y][x].visible = true;
+                remaining--;
+
+                if (tiles[y][x].value > 0) return;
 
                 for (int i = y - 1; i <= y + 1; i++) {
                     for (int j = x - 1; j <= x + 1; j++) {
@@ -147,9 +137,7 @@ namespace Minesweeper {
 
                         if (tiles[i][j].visible || tiles[i][j].flagged) continue;
 
-                        if (tiles[i][j].value == 0) uncover(j, i);
-
-                        else tiles[i][j].visible = true;
+                        uncover(j, i);
                     }
                 }
             }
@@ -163,27 +151,25 @@ namespace Minesweeper {
                         if (flags == 0) return;
                         tiles[y][x].flagged = true;
                         flags--;
+                        remaining--;
                     }
 
                     else {
                         tiles[y][x].flagged = false;
                         flags++;
+                        remaining++;
                     }
                 }
 
                 else {
                     if (tiles[y][x].flagged) return;
 
-                    if (tiles[y][x].value > 0) {
-                        if (tiles[y][x].value == 9) state = LOST;
-
-                        tiles[y][x].visible = true;
-                    }
+                    if (tiles[y][x].value == 9) state = LOST;
 
                     else uncover(x, y);
-
-                    check_state();
                 }
+
+                if (state != LOST && remaining == 0) state = WON;
 
             }
 
