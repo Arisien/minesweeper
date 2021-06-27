@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef MINESWEEPER_GAME
-#define MINESWEEPER_GAME
+#ifndef MINESWEEPER_HPP
+#define MINESWEEPER_HPP
 
 #include <stdexcept>
 #include <cstdlib>

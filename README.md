@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Minesweeper++ is a C++ project containing several Minesweeper implementations, as well as libraries for building your very own implementation.
+Minesweeper++ is a library for making implementations of the classic game Minesweeper, as well as a group of various implementations using the header.
 
 ## Usage
 
@@ -39,6 +39,8 @@ The game is played by writing commands to the console. The following are support
 
 ## Todo
 
+* finish doc
+* int remaining - store amount of tiles left to flag/uncover so the program does not need to iterate through entire vector each time to check if the game is finished.
 * `ms-cli.cpp` - Full fledged Minesweeper terminal game (colors, menu, options, centered UI, unicode, scores, seeds, save games)
 * `ms-gui.cpp` - Minesweeper implementation with GUI
 
