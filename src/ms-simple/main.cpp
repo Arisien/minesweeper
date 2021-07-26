@@ -9,7 +9,7 @@
  *
  */
 
-#include "minesweeper.hpp"
+#include "../minesweeper.hpp"
 
 int main (int argc, char *argv[]) {
 

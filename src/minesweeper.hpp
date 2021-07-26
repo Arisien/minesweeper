@@ -23,22 +23,24 @@ namespace Minesweeper {
 
     enum GameState { S_PLAYING, S_WON, S_LOST };
 
-    enum GameInput { I_POSITION, I_FLAG, I_QUIT, I_NONE };
+    enum GameInput { I_PLOT, I_FLAG, I_QUIT, I_NONE };
 
     class Input {
         public:
             int type;
             int x;
             int y;
+            bool flag;
 
             Input (int t) {
                 type = t;
             }
 
-            Input (int t, int a, int b) {
+            Input (int t, int a, int b, bool f) {
                 type = t;
                 x = a;
                 y = b;
+                flag = f;
             }
     };
 
@@ -199,7 +201,7 @@ namespace Minesweeper {
                     std::cin >> x;
                     std::cin >> y;
 
-                    return Input(I_POSITION, x, y);
+                    return Input(I_PLOT, x, y, false);
                 }
 
                 return Input(I_NONE);
@@ -253,16 +255,14 @@ namespace Minesweeper {
                 
             }
 
-            virtual void start () {
-                start_screen();
-
+            virtual void game_loop () {
                 while (true) {
 
                     render();
 
                     Input i = input();
 
-                    if (i.type == I_POSITION) {
+                    if (i.type == I_PLOT) {
                         field.play(i.x, i.y, flag_mode);
                     }
 
@@ -280,6 +280,12 @@ namespace Minesweeper {
                     }
 
                 }
+            }
+
+            virtual void start () {
+                start_screen();
+
+                game_loop();
 
                 end_screen();
             }
