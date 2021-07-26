@@ -93,7 +93,7 @@ class GuiGame: public Game {
 		}
 
 		void end_screen () {
-			
+
 			Input in = Input(I_NONE);
 			while (in.type == I_NONE) {
 				in = input();
@@ -105,11 +105,20 @@ class GuiGame: public Game {
 
 };
 
-int main () {
+int main (int argc, char *argv[]) {
 
-	GuiGame game(5, 5, 5);
+    if (argc != 4) {
+        std::cout << "Usage: " << argv[0] << " [height] [width] [mines]\n";
+        return 0;
+    }
 
-	game.start();
+    int height = std::stoi(argv[1]);
+    int width = std::stoi(argv[2]);
+    int mines = std::stoi(argv[3]);
 
-	return 0;
+    GuiGame game(height, width, mines);
+
+    game.start();
+
+    return 0;
 }

@@ -14,7 +14,7 @@
 int main (int argc, char *argv[]) {
 
     if (argc != 4) {
-        std::cout << "Usage: " << argv[0] << " [height] [width] [mines]";
+        std::cout << "Usage: " << argv[0] << " [height] [width] [mines]\n";
         return 0;
     }
 
