@@ -118,6 +118,21 @@ namespace Minesweeper {
                 
             }
 
+            int flag_count (int x, int y) {
+
+                    int count = 0;
+
+                    for (int i = y - 1; i <= y + 1; i++) {
+                        for (int j = x - 1; j <= x + 1; j++) {
+                            if (i < 0 || j < 0 || i >= tiles.size() || j >= tiles[i].size()) continue;
+                            if (i == y && j == x) continue;
+                            if (tiles[k][l].flagged) count++;
+                        }
+                    }
+
+                    return count;
+            }
+
             void uncover (int x, int y) {
                 tiles[y][x].visible = true;
                 remaining--;
@@ -197,15 +212,16 @@ namespace Minesweeper {
 
                 else if (cmd == "plot") {
                     int x, y;
+                    bool f;
 
                     std::cin >> x;
                     std::cin >> y;
+                    std::cin >> f;
 
-                    return Input(I_PLOT, x, y, false);
+                    return Input(I_PLOT, x, y, f);
                 }
 
                 return Input(I_NONE);
-
             }
 
             virtual void render () {
@@ -255,6 +271,35 @@ namespace Minesweeper {
                 
             }
 
+            virtual void plot (Input inp) {
+                
+                if (!flag_mode) field.play(inp.x, inp.y, inp.flag);
+
+                else {
+                    Tile tile = field.tiles[inp.y][inp.x];
+
+                    if (tile.visible) {
+                        if (inp.flag == true) return;
+                        if (field.flag_count(inp.x, inp.y) != tile.value) return;
+
+                        for (int i = inp.y - 1; i <= inp.y + 1; i++) {
+                            for (int j = inp.x - 1; j <= inp.x + 1; j++) {
+                                if (i < 0 || j < 0 || i >= field.tiles.size() || j >= field.tiles[i].size()) continue;
+                                if (i == inp.y && j == inp.x) continue;
+                                if (field.tiles[i][j].visible || field.tiles[i][j].flagged) continue;
+
+                                field.play(inp.x, inp.y, false);
+                            }
+                        }
+                    }
+
+                    else {
+                        field.play(inp.x, inp.y, !inp.flag);
+                    }
+
+                }
+            }
+
             virtual void game_loop () {
                 while (true) {
 
@@ -263,7 +308,7 @@ namespace Minesweeper {
                     Input i = input();
 
                     if (i.type == I_PLOT) {
-                        field.play(i.x, i.y, flag_mode);
+                        plot(i);
                     }
 
                     else if (i.type == I_FLAG) {

@@ -51,31 +51,9 @@ class GuiGame: public Game {
 					else if (event.key.code == sf::Mouse::Right) return Input(I_PLOT, x, y , true);
 				}
 			}
-            std::cout << "$";
-
-            std::string cmd;
-
-            std::cin >> cmd;
-
-            if (cmd == "quit")  {
-                return Input(I_QUIT);
-            }
-
-            else if (cmd == "flag") {
-                return Input(I_FLAG);
-            }
-
-            else if (cmd == "plot") {
-                int x, y;
-
-                std::cin >> x;
-                std::cin >> y;
-
-                return Input(I_PLOT, x, y, false);
-            }
 
             return Input(I_NONE);
-
+			
         }
 
 		void render () {
