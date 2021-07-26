@@ -23,7 +23,7 @@ namespace Minesweeper {
 
     enum GameState { S_PLAYING, S_WON, S_LOST };
 
-    enum GameInput { I_PLOT, I_FLAG, I_QUIT, I_NONE };
+    enum GameInput { I_PLOT, I_FLAG, I_QUIT, I_RESET, I_NONE };
 
     class Input {
         public:
@@ -186,116 +186,44 @@ namespace Minesweeper {
     class Game {
         public:
             Field field;
+            time_t start_time;
+            time_t stop_time;
             bool flag_mode;
 
             Game (int h, int w, int m) : field {h,w,m} {
-                field = Field(h,w,m);
                 flag_mode = false;
             }
 
             virtual Input input () {
-
-                std::cout << "$";
-
-                std::string cmd;
-
-                std::cin >> cmd;
-
-                if (cmd == "quit")  {
-                    return Input(I_QUIT);
-                }
-
-                else if (cmd == "flag") {
-                    return Input(I_FLAG);
-                }
-
-                else if (cmd == "plot") {
-                    int x, y;
-                    bool f;
-
-                    std::cout << "X: ";
-                    std::cin >> x;
-                    std::cout << "Y: ";
-                    std::cin >> y;
-                    std::cout << "Flag: ";
-                    std::cin >> f;
-
-                    return Input(I_PLOT, x, y, f);
-                }
-
                 return Input(I_NONE);
             }
 
-            virtual void render () {
+            virtual void render () {}
 
-                std::system("clear");
-
-                for (int i = 0; i < field.height; i++) {
-                    for (int j = 0; j < field.width; j++) {
-
-                        Tile tile = field.tiles[i][j];
-
-                        if (tile.flagged) std::cout << "F";
-                        else if (tile.visible) std::cout << tile.value;
-                        else std::cout << "#";
-
-                        std::cout << " ";
-
-                    }
-                    std::cout << std::endl;
-                }
-
-                std::cout << std::endl << "Flags: " << field.flags << std::endl;
+            virtual void plot (Input in) {
                 
-                std::string flag_str = "ON";
-
-                if (!flag_mode) flag_str = "OFF";
-
-                std::cout << "Flag mode is " << flag_str << std::endl;
-            }
-
-            virtual void start_screen () {
-                //std::system("cls||clear");
-            }
-
-            virtual void end_screen () {
-
-                std::cout << "Game Over! ";
-
-                if (field.state == S_LOST) {
-                    std::cout << "Better luck next time." << std::endl;
-                }
+                if (!flag_mode) field.play(in.x, in.y, in.flag);
 
                 else {
-                    std::cout << "Congratulations" << std::endl;
-                }
-                
-            }
-
-            virtual void plot (Input inp) {
-                
-                if (!flag_mode) field.play(inp.x, inp.y, inp.flag);
-
-                else {
-                    Tile tile = field.tiles[inp.y][inp.x];
+                    Tile tile = field.tiles[in.y][in.x];
 
                     if (tile.visible) {
-                        if (inp.flag == true) return;
-                        if (field.flag_count(inp.x, inp.y) != tile.value) return;
+                        if (in.flag == true) return;
+                        if (field.flag_count(in.x, in.y) != tile.value) return;
 
-                        for (int i = inp.y - 1; i <= inp.y + 1; i++) {
-                            for (int j = inp.x - 1; j <= inp.x + 1; j++) {
+                        for (int i = in.y - 1; i <= in.y + 1; i++) {
+                            for (int j = in.x - 1; j <= in.x + 1; j++) {
                                 if (i < 0 || j < 0 || i >= field.tiles.size() || j >= field.tiles[i].size()) continue;
-                                if (i == inp.y && j == inp.x) continue;
+                                if (i == in.y && j == in.x) continue;
                                 if (field.tiles[i][j].visible || field.tiles[i][j].flagged) continue;
 
-                                field.play(inp.x, inp.y, false);
+                                field.play(in.x, in.y, false);
                             }
                         }
                     }
 
                     else {
-                        field.play(inp.x, inp.y, !inp.flag);
+                        field.play(in.x, in.y, !in.flag);
                     }
 
                 }
@@ -305,10 +233,10 @@ namespace Minesweeper {
                 while (true) {
 
                     render();
-
+                    
                     Input i = input();
 
-                    if (i.type == I_PLOT) {
+                    if (i.type == I_PLOT && field.state == S_PLAYING) {
                         plot(i);
                     }
 
@@ -318,22 +246,26 @@ namespace Minesweeper {
 
                     else if (i.type == I_QUIT) {
                         field.state = S_LOST;
-                        break;
                     }
 
-                    if (field.state != S_PLAYING) {
-                        break;
+                    else if (i.type == I_RESET) {
+                        field = Field(field.height, field.width, field.mines);
+                        start_time = time(0);
+                        stop_time = start_time;
+                    }
+
+                    if (field.state != S_PLAYING && start_time == stop_time) {
+                        stop_time = time(0);
                     }
 
                 }
             }
 
             virtual void start () {
-                start_screen();
-
+                field = Field(field.height, field.width, field.mines);
+                start_time = time(0);
+                stop_time = start_time;
                 game_loop();
-
-                end_screen();
             }
     };
 
