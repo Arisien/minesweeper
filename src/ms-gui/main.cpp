@@ -22,7 +22,7 @@ class GuiGame: public Game {
 
 		GuiGame (int h, int w, int m) : Game {h,w,m} {
 
-			app.create(sf::VideoMode(400,400), "Minesweeper++");
+			app.create(sf::VideoMode(32*field.width, 32*field.height), "Minesweeper++");
 
 			texture.loadFromFile("./tiles.jpg");
 
@@ -42,7 +42,6 @@ class GuiGame: public Game {
 			while (app.pollEvent(event))
 			{
 				if (event.type == sf::Event::Closed){
-					app.close();
 					return Input(I_QUIT);
 				}
 
@@ -93,11 +92,20 @@ class GuiGame: public Game {
 
 		}
 
+		void end_screen () {
+			
+			Input in = Input(I_NONE);
+			while (in.type == I_NONE) {
+				in = input();
+				render();
+			}
+
+			app.close();
+		}
+
 };
 
 int main () {
-
-	std::cout << "Start" << std::endl;
 
 	GuiGame game(5, 5, 5);
 

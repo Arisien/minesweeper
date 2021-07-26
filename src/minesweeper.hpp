@@ -174,7 +174,7 @@ namespace Minesweeper {
 
                     if (tiles[y][x].value == 9) state = S_LOST;
 
-                    else uncover(x, y);
+                    uncover(x, y);
                 }
 
                 if (state != S_LOST && remaining == 0) state = S_WON;
