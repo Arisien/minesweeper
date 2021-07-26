@@ -8,7 +8,15 @@ Minesweeper++ is a library for making implementations of the classic game Minesw
 
 *Usage depends on each Minesweeper implementation*
 
-### `ms-simple.cpp`
+### `ms-gui`
+
+To run Minesweeper GUI, you need to pass command line arguments for field height and width as well as amount of mines. Playing on a 6*6 field with 12 mines will look something like this:
+
+* `ms-gui 6 6 12`
+
+The game is played with mouse buttons (Left: uncover, Right: flag)
+
+### `ms-simple`
 
 To run Minesweeper simple, you need to pass command line arguments for field height and width as well as amount of mines. Playing on a 6*6 field with 12 mines will look something like this:
 
@@ -71,8 +79,9 @@ Game is a class containing a basic I/O system for interacting with the Field cla
 
 ## Todo
 
+* ms-gui - Full spritesheet (score & smiley) / multiple game support.
+* ms-simple - Work on Linux
 * `ms-cli.cpp` - Full fledged Minesweeper terminal game (colors, menu, options, centered UI, unicode, scores, seeds, save games)
-* `ms-gui.cpp` - Minesweeper implementation with GUI
 
 ## Contributors
 
