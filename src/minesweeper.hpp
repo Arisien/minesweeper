@@ -119,14 +119,13 @@ namespace Minesweeper {
             }
 
             int flag_count (int x, int y) {
-
                     int count = 0;
 
                     for (int i = y - 1; i <= y + 1; i++) {
                         for (int j = x - 1; j <= x + 1; j++) {
                             if (i < 0 || j < 0 || i >= tiles.size() || j >= tiles[i].size()) continue;
                             if (i == y && j == x) continue;
-                            if (tiles[k][l].flagged) count++;
+                            if (tiles[i][j].flagged) count++;
                         }
                     }
 
@@ -214,8 +213,11 @@ namespace Minesweeper {
                     int x, y;
                     bool f;
 
+                    std::cout << "X: ";
                     std::cin >> x;
+                    std::cout << "Y: ";
                     std::cin >> y;
+                    std::cout << "Flag: ";
                     std::cin >> f;
 
                     return Input(I_PLOT, x, y, f);
@@ -226,8 +228,7 @@ namespace Minesweeper {
 
             virtual void render () {
 
-                std::system("cls||clear");
-
+                std::system("clear");
 
                 for (int i = 0; i < field.height; i++) {
                     for (int j = 0; j < field.width; j++) {
@@ -254,7 +255,7 @@ namespace Minesweeper {
             }
 
             virtual void start_screen () {
-                std::system("cls||clear");
+                //std::system("cls||clear");
             }
 
             virtual void end_screen () {

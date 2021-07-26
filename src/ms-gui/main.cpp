@@ -16,44 +16,51 @@ using namespace Minesweeper;
 
 class GuiGame: public Game {
 	public:
-		sf::RenderWindow *app;
+		sf::RenderWindow app;
 		sf::Texture texture;
 		sf::Sprite sprite;
 
 		GuiGame (int h, int w, int m) : Game {h,w,m} {
 
-			app = &sf::RenderWindow(sf::VideoMode(400,400), "Minesweeper++");
+			app.create(sf::VideoMode(400,400), "Minesweeper++");
 
 			texture.loadFromFile("./tiles.jpg");
 
 			sprite = sf::Sprite(texture);
-
+			
 		}
 
         Input input () {
 
-        	sf::Vector2i pos = sf::Mouse::getPosition(*app);
+        	sf::Vector2i pos = sf::Mouse::getPosition(app);
 
 			int x = pos.x / 32;
 			int y = pos.y / 32;
 
 			sf::Event event;
 
-			while (app->pollEvent(event))
+			while (app.pollEvent(event))
 			{
 				if (event.type == sf::Event::Closed){
-					app->close();
+					app.close();
 					return Input(I_QUIT);
 				}
 
 				if (event.type == sf::Event::MouseButtonReleased) {
-					if (event.key.code == sf::Mouse::Left) return Input(I_PLOT, x, y , false);
-					else if (event.key.code == sf::Mouse::Right) return Input(I_PLOT, x, y , true);
-				}
-			}
+					if (event.key.code == sf::Mouse::Left) {
+						return Input(I_PLOT, y, x , false);
 
-            return Input(I_NONE);
+					}
+					else if (event.key.code == sf::Mouse::Right) {
+						return Input(I_PLOT, y, x, true);
+
+					}
+				}
+
+			}
 			
+			return Input(I_NONE);
+
         }
 
 		void render () {
@@ -77,16 +84,21 @@ class GuiGame: public Game {
 
 					sprite.setTextureRect(sf::IntRect(xPos, 0, 32, 32));
 					sprite.setPosition(i*32, j*32);
-					app->draw(sprite);
+
+					app.draw(sprite);
                 }
             }
+			
+            app.display();
 
-            app->display();
 		}
 
 };
 
 int main () {
+
+	std::cout << "Start" << std::endl;
+
 	GuiGame game(5, 5, 5);
 
 	game.start();
